@@ -1,0 +1,277 @@
+scalar Date
+scalar Upload
+
+input TimeFilter {
+  start: Date!
+  end: Date!
+}
+
+enum SimpleTime {
+  TODAY,
+  THIS_WEEK,
+  THIS_MONTH,
+  THIS_YEAR
+}
+
+type BaseTransaksi {
+  nominal: Float!
+  waktu: Date!
+  keterangan: String
+  cabang: Cabang!
+  addedBy: User!
+}
+
+type User {
+  id: Int!
+  nama: String!
+  kategori: String!
+  username: String
+  kontak: String
+}
+
+type Cabang {
+  id: Int!
+  nama: String!
+  alamat: String
+}
+
+type Barbermen {
+  id: Int!
+  nama: String!
+  cabang: Cabang
+  aktif: Boolean
+}
+
+type Item {
+  id: Int!
+  nama: String!
+  keterangan: String!
+  hargaJual: Float
+  hargaBeli: Float!
+  stock: Int!
+}
+
+interface Transaksi {
+  id: Int!
+  nominal: Float!
+  waktu: Date!
+  cabang: Cabang!
+  addedBy: User!
+  keterangan: String
+}
+
+interface MutasiItem {
+  id: Int!
+  nominal: Float!
+  waktu: Date!
+  cabang: Cabang!
+  addedBy: User!
+  keterangan: String
+  item: Item!
+  jumlah: Int!
+}
+
+type Penjualan implements MutasiItem {
+  id: Int!
+  item: Item!
+  jumlah: Int!
+  nominal: Float!
+  waktu: Date!
+  cabang: Cabang!
+  addedBy: User!
+  forUser: User!
+  keterangan: String
+}
+type Pembelian implements MutasiItem {
+  id: Int!
+  item: Item!
+  jumlah: Int!
+  nominal: Float!
+  waktu: Date!
+  cabang: Cabang!
+  addedBy: User!
+  keterangan: String
+}
+type Penggunaan implements MutasiItem {
+  id: Int!
+  item: Item!
+  jumlah: Int!
+  nominal: Float!
+  waktu: Date!
+  keterangan: String
+  cabang: Cabang!
+  addedBy: User!
+}
+
+type Jasa {
+  id: Int!
+  nama: String!
+  harga: Float!
+  estimasiWaktu: Int!
+  keterangan: String!
+}
+
+type Media {
+  id: Int!
+  url: String!
+  description: String
+}
+
+type Sesi {
+  id: Int!
+  scheduledStartTime: Date!
+  scheduledEndTime: Date!
+  executionStartTime: Date
+  executionEndTime: Date
+  state: SesiState!
+  cabang: Cabang!
+  barbermen: Barbermen!
+  jasa: [Jasa]!
+  user: User!
+  addedBy: User!
+  rating: Int
+  keterangan: String
+}
+
+type SesiStateCount {
+  DONE: Int!
+  ONGOING: Int!
+  CANCELED: Int!
+  SCHEDULED: Int!
+}
+
+enum SesiState {
+  SCHEDULED,
+  ONGOING,
+  DONE,
+  CANCELED
+}
+
+input Pagination {
+  skip: Int!
+  take: Int!
+}
+
+input CreateUserInput {
+  nama: String!
+  username: String!
+  kategori: String!
+}
+
+input UpdateUserInput {
+  id: Int!
+  nama: String!
+  username: String!
+  avatar: String!
+}
+
+
+input CreateAdminInput {
+  username: String!
+  nama: String!
+  idsCabang: [Int]!
+}
+
+input AdminAddItemInput {
+  namaItem: String!
+  deskripsi: String!
+  hargaBeli: Float!
+  hargaJual: Float!
+}
+
+input AdminSellInput {
+  namaUser: String!
+  idItem: Int!
+  nominal: Float!
+  jumlah: Int!
+  keterangan: String
+  waktu: Date
+}
+
+input AdminBuyInput {
+  idItem: Int!
+  nominal: Float!
+  jumlah: Int!
+  keterangan: String
+  waktu: Date
+}
+
+input AdminUseInput {
+  idItem: Int!
+  nominal: Float!
+  jumlah: Int!
+  keterangan: String
+  waktu: Date
+}
+
+input AdminTransaksiInput {
+  tipe: String!
+  nominal: Float!
+  keterangan: String!
+  waktu: Date
+}
+
+input RegisterAdminInput {
+  cabang: Int!
+  nama: String!
+  username: String!
+  password: String!
+}
+
+input AdminNewVisitInput {
+  namaUser: String!
+  jasa: [Int]!
+  barbermen: Int!
+  totalBayar: Float
+  waktu: Date
+  keterangan: String
+}
+
+input AdminPenjualanInput {
+  item: [Int]!
+  namaUser: String!
+}
+
+input CreateCabangInput {
+  nama: String!
+  alamat: String!
+}
+
+type Mutation {
+
+  # Admin mutations
+  adminNewVisit(payload: AdminNewVisitInput!) : Sesi!
+
+  adminAddItem(payload: AdminAddItemInput!) : Item!
+  adminRemoveItem(id: Int!) : Int!
+
+  adminSellItem(payload: AdminSellInput!) : Pembelian!
+  adminBuyItem(payload: AdminBuyInput!) : Penjualan!
+  adminUseItem(payload: AdminUseInput!) : Penggunaan!
+
+  adminTransaksi(payload: AdminTransaksiInput!) : Transaksi!
+  adminRemoveTransaksi(id: Int!) : Int!
+
+  # Owner mutations
+  ownerCreateCabang(payload: CreateCabangInput!) : Cabang!
+  ownerUpdateCabang(id: Int!, payload: CreateCabangInput!) : Cabang!
+  ownerRemoveCabang(id: Int!) : Int!
+  ownerRegisterAdmin(payload: RegisterAdminInput!) : User!
+
+}
+
+type Query {
+
+  # Admin querys
+  adminListSesi: [Sesi]!
+  adminListBarbermen: [Barbermen]!
+  adminListJasa: [Jasa]!
+
+  # Owner querys
+  ownerListCabang: [Cabang]!
+  ownerCabangItem(cabang: Int!) : [Item]!
+  ownerCabangPemasukan(cabang: Int!, time: SimpleTime!) : [Transaksi]!
+  ownerCabangPengeluaran(cabang: Int!, time: SimpleTime!) : [Transaksi]!
+  ownerCabangTransaksi(cabang: Int!, time: SimpleTime!) : [Transaksi]!
+  ownerCabangSesi(cabang: Int!, time: SimpleTime!) : [Sesi]!
+}
