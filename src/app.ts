@@ -14,6 +14,7 @@ import { createDbConnection, seed } from './models'
 import { resolvers } from './resolvers'
 import { auths } from './routes'
 import { generateAdminModel } from './services/Admin'
+import { generateOwnerModel } from './services/Owner'
 
 const PORT = process.env.PORT
 // const MODE = process.env.MODE || 'dev'
@@ -53,7 +54,8 @@ async function start() {
         authToken: req.authToken,
         user: req.user,
         models: {
-          Admin: generateAdminModel({ user, box, authToken })
+          Admin: generateAdminModel({ user, box, authToken }),
+          Owner: generateOwnerModel(box, user)
         }
       }
     }

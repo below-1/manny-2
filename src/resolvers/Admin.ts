@@ -10,7 +10,7 @@ import moment from 'moment'
 
 export const AdminResolver = {
   Query: {
-
+    
   },
   Mutation: {
     adminNewVisit: async (_, { payload }, { models }) => models.Admin.newVisit(payload),
