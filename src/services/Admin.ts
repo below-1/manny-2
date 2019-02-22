@@ -93,6 +93,14 @@ class AdminModel {
     return await this.box.repo.item.save( item )
   }
 
+  public async removeItem(id) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    await this.box.repo.item.delete(id)
+    return id
+  }
+
 }
 
 export const generateAdminModel = ({ user, box, ...rest } : IAdminServiceInput) =>  new AdminModel(box, user)
