@@ -3,6 +3,7 @@ export const OwnerResolver = {
 
   },
   Mutation: {
-    ownerCreateCabang: async (_, { payload }, { models: { Owner } }) => Owner.createCabang(payload)
+    ownerCreateCabang: async (_, { payload }, { models: { Owner } }) => Owner.createCabang(payload),
+    ownerUpdateCabang: async (_, { id, payload }, { models: { Owner } }) => Owner.updateCabang(id, payload)
   }
 }
