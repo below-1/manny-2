@@ -151,6 +151,27 @@ class AdminModel {
     })
   }
 
+  public async buy(payload) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    
+    let waktu
+    if (payload.waktu) {
+      waktu = payload.waktu
+    } else {
+      waktu = moment().toDate()
+    }
+    let pembelian = this.box.repo.pembelian.create({
+      ...payload,
+      waktu,
+      idAddedBy: this.admin.id,
+      idCabang: this.admin.idAdminCabang
+    })
+    pembelian = await this.box.repo.pembelian.save(pembelian)
+    return pembelian
+  }
+
 }
 
 export const generateAdminModel = ({ user, box, ...rest } : IAdminServiceInput) =>  new AdminModel(box, user)
