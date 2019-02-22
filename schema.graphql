@@ -71,6 +71,15 @@ interface MutasiItem {
   jumlah: Int!
 }
 
+type TransaksiLain implements Transaksi {
+  id: Int!
+  nominal: Float!
+  waktu: Date!
+  cabang: Cabang!
+  addedBy: User!
+  keterangan: String
+}
+
 type Penjualan implements MutasiItem {
   id: Int!
   item: Item!
@@ -204,7 +213,6 @@ input AdminUseInput {
 }
 
 input AdminTransaksiInput {
-  tipe: String!
   nominal: Float!
   keterangan: String!
   waktu: Date
@@ -248,7 +256,7 @@ type Mutation {
   adminBuyItem(payload: AdminBuyInput!) : Pembelian!
   adminUseItem(payload: AdminUseInput!) : Penggunaan!
 
-  adminTransaksi(payload: AdminTransaksiInput!) : Transaksi!
+  adminTransaksi(payload: AdminTransaksiInput!) : TransaksiLain!
   adminRemoveTransaksi(id: Int!) : Int!
 
   # Owner mutations

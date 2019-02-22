@@ -204,6 +204,36 @@ class AdminModel {
     return await this.box.repo.penggunaan.save(penggunaan)
   }
 
+  public async transaksi(payload) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+
+    let waktu
+    if (payload.waktu) {
+      waktu = payload.waktu
+    } else {
+      waktu = moment().toDate()
+    }
+
+    let transaksi = this.box.repo.transaksi.create({
+      idCabang: this.admin.idAdminCabang,
+      idAddedBy: this.admin.id,
+      ...payload,
+      waktu
+    })
+
+    return await this.box.repo.transaksi.save(transaksi)
+  }
+
+  public async removeTransaksi (id) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    await this.box.repo.transaksi.delete(id)
+    return id
+  }
+
 }
 
 export const generateAdminModel = ({ user, box, ...rest } : IAdminServiceInput) =>  new AdminModel(box, user)
