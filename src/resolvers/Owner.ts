@@ -1,6 +1,7 @@
 export const OwnerResolver = {
   Query: {
-
+    ownerListCabang: async (_, __, { models: { Owner } }) => Owner.listCabang(),
+    ownerCabangItem: async (_, { cabang }, { models: { Owner } }) => Owner.listItemInCabang(cabang)
   },
   Mutation: {
     ownerCreateCabang: async (_, { payload }, { models: { Owner } }) => Owner.createCabang(payload),

@@ -52,6 +52,24 @@ export class OwnerModel {
     })
     return await this.box.repo.user.save(user)
   }
+
+  public async listCabang() {
+    if (!this.owner) {
+      throw new Error("Owner is undefiend")
+    }
+    return await this.box.repo.cabang.find()
+  }
+
+  public async listItemInCabang (cabang: number) {
+    if (!this.owner) {
+      throw new Error("Owner is undefiend")
+    }
+    return await this.box.repo.item.find({
+      where: {
+        idCabang: cabang
+      }
+    })
+  }
 }
 
 
