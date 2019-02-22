@@ -111,7 +111,6 @@ class AdminModel {
       throw new Error('Admin is undefined')
     }
     return await this.box.connection.transaction(async em => {
-      // 
       const userRepo = em.getRepository<User>(User)
       const penjualanRepo = em.getRepository<Penjualan>(Penjualan)
       const itemRepo = em.getRepository<Item>(Item)
@@ -135,6 +134,10 @@ class AdminModel {
       } else {
         let item = await itemRepo.findOne(payload.idItem)
         nominal = payload.jumlah * item.hargaJual
+      }
+
+      if (payload.jumlah > 0) {
+        payload.jumlah = -1 * payload.jumlah
       }
 
       let penjualan = penjualanRepo.create({
@@ -162,6 +165,9 @@ class AdminModel {
     } else {
       waktu = moment().toDate()
     }
+    if (payload.nominal > 0) {
+      payload.nominal = -1 * payload.nominal
+    }
     let pembelian = this.box.repo.pembelian.create({
       ...payload,
       waktu,
@@ -182,6 +188,11 @@ class AdminModel {
     } else {
       waktu = moment().toDate()
     }
+
+    if (payload.jumlah > 0) {
+      payload.jumlah = payload.jumlah * -1
+    }
+
     let penggunaan = this.box.repo.penggunaan.create({
       ...payload,
       waktu,
