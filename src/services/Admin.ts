@@ -4,7 +4,12 @@ import {
   Jasa,
   Sesi,
   SesiState,
-  PembayaranSesi
+  PembayaranSesi,
+  Penjualan,
+  Pembelian,
+  Penggunaan,
+  Transaksi,
+  Item
 } from '../models'
 import { Box } from '../types'
 import chalk from 'chalk'
@@ -99,6 +104,51 @@ class AdminModel {
     }
     await this.box.repo.item.delete(id)
     return id
+  }
+
+  public async sell(payload) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    return await this.box.connection.transaction(async em => {
+      // 
+      const userRepo = em.getRepository<User>(User)
+      const penjualanRepo = em.getRepository<Penjualan>(Penjualan)
+      const itemRepo = em.getRepository<Item>(Item)
+
+      let newUser: User = userRepo.create({
+        nama: payload.namaUser,
+        kategori: 'anon'
+      })
+      newUser = await userRepo.save(newUser)
+
+      let waktu, nominal
+
+      if (payload.waktu) { 
+        waktu = payload.waktu
+      } else {
+        waktu = moment().toDate()
+      }
+
+      if (payload.nominal) {
+        nominal = payload.nominal
+      } else {
+        let item = await itemRepo.findOne(payload.idItem)
+        nominal = payload.jumlah * item.hargaJual
+      }
+
+      let penjualan = penjualanRepo.create({
+        idAddedBy: this.admin.id,
+        idItem: payload.idItem,
+        jumlah: payload.jumlah,
+        idCabang: this.admin.idAdminCabang,
+        waktu,
+        nominal,
+        keterangan: payload.keterangan
+      })
+
+      return await penjualanRepo.save(penjualan)
+    })
   }
 
 }

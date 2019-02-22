@@ -182,8 +182,8 @@ input AdminAddItemInput {
 input AdminSellInput {
   namaUser: String!
   idItem: Int!
-  nominal: Float!
   jumlah: Int!
+  nominal: Float
   keterangan: String
   waktu: Date
 }
@@ -245,8 +245,8 @@ type Mutation {
   adminAddItem(payload: AdminAddItemInput!) : Item!
   adminRemoveItem(id: Int!) : Int!
 
-  adminSellItem(payload: AdminSellInput!) : Pembelian!
-  adminBuyItem(payload: AdminBuyInput!) : Penjualan!
+  adminSellItem(payload: AdminSellInput!) : Penjualan!
+  adminBuyItem(payload: AdminBuyInput!) : Pembelian!
   adminUseItem(payload: AdminUseInput!) : Penggunaan!
 
   adminTransaksi(payload: AdminTransaksiInput!) : Transaksi!
