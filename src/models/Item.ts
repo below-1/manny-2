@@ -15,7 +15,7 @@ export class Item {
   nama: string;
 
   @Column()
-  deskripsi: string;
+  keterangan: string;
 
   @Column('double')
   hargaBeli: number;

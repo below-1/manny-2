@@ -26,8 +26,8 @@ class AdminModel {
     }
   }
 
-  public async adminNewVisit (payload: any) {
-    console.log(chalk.bgBlue("Admin is "), this.admin)
+  public async newVisit (payload: any) {
+    // console.log(chalk.bgBlue("Admin is "), this.admin)
     if (!this.admin) {
       throw new Error('Admin is undefined')
     }
@@ -78,6 +78,19 @@ class AdminModel {
 
       return sesi
     })
+  }
+
+  public async addItem (payload) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    let { namaItem, ...rest } = payload
+    let item = this.box.repo.item.create({
+      ...rest,
+      nama: namaItem,
+      idCabang: this.admin.idAdminCabang
+    })
+    return await this.box.repo.item.save( item )
   }
 
 }
