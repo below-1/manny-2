@@ -64,6 +64,7 @@ class AdminModel {
       let sesi = sesiRepo.create({
         keterangan: payload.keterangan,
         waktu,
+        executionEndTime: waktu,
         idBarbermen: payload.barbermen,
         idAddedBy: this.admin.id,
         state: SesiState.DONE,
@@ -234,6 +235,53 @@ class AdminModel {
     return id
   }
 
+  public async listSesi() {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    let result = await this.box.repo.sesi.find({
+      where: {
+        idCabang: this.admin.idAdminCabang
+      },
+      relations: [
+        "barbermen", "forUser"
+      ]
+    })
+    let converted = result.map((it: any) => {
+      it.user = it.forUser
+      return it
+    })
+    return converted
+  }
+
+  public async listBarbermen () {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    return await this.box.repo.barbermen.find({
+      where: {
+        idCabang: this.admin.idAdminCabang
+      }
+    })
+  }
+
+  public async listJasa () {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    return await this.box.repo.jasa.find({})
+  }
+
+  public async listItem () {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    return await this.box.repo.item.find({
+      where: {
+        idCabang: this.admin.idAdminCabang
+      }
+    })
+  }
 }
 
 export const generateAdminModel = ({ user, box, ...rest } : IAdminServiceInput) =>  new AdminModel(box, user)

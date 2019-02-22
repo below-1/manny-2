@@ -10,7 +10,10 @@ import moment from 'moment'
 
 export const AdminResolver = {
   Query: {
-    
+    adminListSesi: async (_, __, { models }) => models.Admin.listSesi(),
+    adminListBarbermen: async (_, __, { models }) => models.Admin.listBarbermen(),
+    adminListJasa: async (_, __, { models }) => models.Admin.listJasa(),
+    adminListItem: async (_, __, { models }) => models.Admin.listItem()
   },
   Mutation: {
     adminNewVisit: async (_, { payload }, { models }) => models.Admin.newVisit(payload),

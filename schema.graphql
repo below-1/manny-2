@@ -273,6 +273,7 @@ type Query {
   adminListSesi: [Sesi]!
   adminListBarbermen: [Barbermen]!
   adminListJasa: [Jasa]!
+  adminListItem: [Item]!
 
   # Owner querys
   ownerListCabang: [Cabang]!
