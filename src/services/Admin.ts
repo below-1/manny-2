@@ -155,7 +155,7 @@ class AdminModel {
     if (!this.admin) {
       throw new Error('Admin is undefined')
     }
-    
+
     let waktu
     if (payload.waktu) {
       waktu = payload.waktu
@@ -170,6 +170,27 @@ class AdminModel {
     })
     pembelian = await this.box.repo.pembelian.save(pembelian)
     return pembelian
+  }
+
+  public async use(payload) {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    let waktu
+    if (payload.waktu) {
+      waktu = payload.waktu
+    } else {
+      waktu = moment().toDate()
+    }
+    let penggunaan = this.box.repo.penggunaan.create({
+      ...payload,
+      waktu,
+      nominal: 0,
+      idAddedBy: this.admin.id,
+      idCabang: this.admin.idAdminCabang
+    })
+
+    return await this.box.repo.penggunaan.save(penggunaan)
   }
 
 }

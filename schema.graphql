@@ -198,7 +198,6 @@ input AdminBuyInput {
 
 input AdminUseInput {
   idItem: Int!
-  nominal: Float!
   jumlah: Int!
   keterangan: String
   waktu: Date

@@ -17,6 +17,7 @@ export const AdminResolver = {
     adminAddItem: async (_, { payload }, { models }) => models.Admin.addItem(payload),
     adminRemoveItem: async (_, { id }, { models }) => models.Admin.removeItem(id),
     adminSellItem: async (_, { payload }, { models }) => models.Admin.sell(payload),
-    adminBuyItem: async (_, { payload }, { models }) => models.Admin.buy(payload)
+    adminBuyItem: async (_, { payload }, { models }) => models.Admin.buy(payload),
+    adminUseItem: async (_, { payload }, { models }) => models.Admin.use(payload)
   }
 }
