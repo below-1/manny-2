@@ -27,6 +27,7 @@ type User {
   kategori: String!
   username: String
   kontak: String
+  cabang: Cabang
 }
 
 type Cabang {
@@ -80,7 +81,7 @@ type TransaksiLain implements Transaksi {
   keterangan: String
 }
 
-type Penjualan implements MutasiItem {
+type Penjualan implements Transaksi {
   id: Int!
   item: Item!
   jumlah: Int!
@@ -91,7 +92,7 @@ type Penjualan implements MutasiItem {
   forUser: User!
   keterangan: String
 }
-type Pembelian implements MutasiItem {
+type Pembelian implements Transaksi {
   id: Int!
   item: Item!
   jumlah: Int!
@@ -101,7 +102,7 @@ type Pembelian implements MutasiItem {
   addedBy: User!
   keterangan: String
 }
-type Penggunaan implements MutasiItem {
+type Penggunaan implements Transaksi {
   id: Int!
   item: Item!
   jumlah: Int!
@@ -147,6 +148,11 @@ type SesiStateCount {
   ONGOING: Int!
   CANCELED: Int!
   SCHEDULED: Int!
+}
+
+type AdminLoginResult {
+  admin: User!
+  token: String!
 }
 
 enum SesiState {
@@ -244,9 +250,15 @@ input CreateCabangInput {
   alamat: String!
 }
 
+type PemasukanWithTotal {
+  items: [Transaksi]!
+  total: Float!
+}
+
 type Mutation {
 
   # Admin mutations
+  adminLogin(username: String!, password: String!) : AdminLoginResult!
   adminNewVisit(payload: AdminNewVisitInput!) : Sesi!
 
   adminAddItem(payload: AdminAddItemInput!) : Item!
@@ -278,7 +290,7 @@ type Query {
   # Owner querys
   ownerListCabang: [Cabang]!
   ownerCabangItem(cabang: Int!) : [Item]!
-  ownerCabangPemasukan(cabang: Int!, time: SimpleTime!) : [Transaksi]!
+  ownerCabangPemasukan(cabang: Int!, time: SimpleTime!) : PemasukanWithTotal!
   ownerCabangPengeluaran(cabang: Int!, time: SimpleTime!) : [Transaksi]!
   ownerCabangTransaksi(cabang: Int!, time: SimpleTime!) : [Transaksi]!
   ownerCabangSesi(cabang: Int!, time: SimpleTime!) : [Sesi]!

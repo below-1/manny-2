@@ -4,6 +4,18 @@ import { User } from '../models'
 const jwt = require('jsonwebtoken')
 const APP_SECRET = process.env.APP_SECRET
 
+export const encodeUser = (user: User) => {
+  let token = jwt.sign({
+    id: user.id,
+    username: user.username,
+    nama: user.nama,
+    password: user.password,
+    kategori: user.kategori,
+    idAdminCabang: user.idAdminCabang
+  }, APP_SECRET)
+  return token
+}
+
 export const encodeToken = (repo: Repository<User>) => async (id: number) => {
   let user = await repo.findOne(id)
   if (!user) {

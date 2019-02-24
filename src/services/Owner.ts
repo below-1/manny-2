@@ -1,7 +1,15 @@
-import { Box } from '../types'
+import { 
+  Between,
+  MoreThan
+} from 'typeorm'
+import { 
+  Box,
+  SimpleTime
+} from '../types'
 import {
   User
 } from '../models'
+import { toDateRange } from './utils'
 
 export class OwnerModel {
 
@@ -69,6 +77,26 @@ export class OwnerModel {
         idCabang: cabang
       }
     })
+  }
+
+  public async pemasukanInCabang (cabang: number, time: SimpleTime) {
+    if (!this.owner) {
+      throw new Error("Owner is undefiend")
+    }
+    let { start, end } = toDateRange(time)
+    let items = await this.box.repo.transaksi.find({
+      where: {
+        idCabang: cabang,
+        nominal: MoreThan(0),
+        waktu: Between(start, end)
+      }
+    })
+    let total = items.map(it => it.nominal).reduce((prev, curr) => prev + curr, 0)
+    let result = {
+      items,
+      total
+    }
+    return result
   }
 }
 

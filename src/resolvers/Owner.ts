@@ -1,7 +1,9 @@
 export const OwnerResolver = {
   Query: {
     ownerListCabang: async (_, __, { models: { Owner } }) => Owner.listCabang(),
-    ownerCabangItem: async (_, { cabang }, { models: { Owner } }) => Owner.listItemInCabang(cabang)
+    ownerCabangItem: async (_, { cabang }, { models: { Owner } }) => Owner.listItemInCabang(cabang),
+    ownerCabangPemasukan: async (_, { cabang, time }, { models: { Owner } }) => Owner.pemasukanInCabang(cabang, time)
+    
   },
   Mutation: {
     ownerCreateCabang: async (_, { payload }, { models: { Owner } }) => Owner.createCabang(payload),

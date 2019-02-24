@@ -16,6 +16,7 @@ export const AdminResolver = {
     adminListItem: async (_, __, { models }) => models.Admin.listItem()
   },
   Mutation: {
+    adminLogin: async (_, { username, password }, { models }) => models.Admin.adminLogin(username ,password),
     adminNewVisit: async (_, { payload }, { models }) => models.Admin.newVisit(payload),
     adminAddItem: async (_, { payload }, { models }) => models.Admin.addItem(payload),
     adminRemoveItem: async (_, { id }, { models }) => models.Admin.removeItem(id),

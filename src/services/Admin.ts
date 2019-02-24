@@ -12,7 +12,7 @@ import {
   Item
 } from '../models'
 import { Box } from '../types'
-import chalk from 'chalk'
+import { encodeUser } from './auth'
 
 interface IAdminServiceInput {
   user: User;
@@ -28,6 +28,24 @@ class AdminModel {
       // Do nothing
     } else {
       this.admin = null
+    }
+  }
+
+  public async adminLogin (username, password) {
+    let admin = await this.box.repo.user.findOne({
+      where: {
+        username, 
+        password,
+        kategori: 'admin'
+      }
+    })
+    if (!admin) {
+      throw new Error("Can't find admin")
+    }
+    let token = encodeUser(admin)
+    return {
+      admin,
+      token
     }
   }
 
@@ -281,6 +299,13 @@ class AdminModel {
         idCabang: this.admin.idAdminCabang
       }
     })
+  }
+
+  public async getCabangForAdmin () {
+    if (!this.admin) {
+      throw new Error('Admin is undefined')
+    }
+    return await this.box.repo.cabang.findOne(this.admin.idAdminCabang)
   }
 }
 
